@@ -1,31 +1,26 @@
+import { useState, useEffect } from "react";
 import { Repositoryitem } from "./RepositoryItem";
-import {useState} from 'react';
 
-const repository = {
-  name: 'simon-game',
-  description: 'simon game on jquery',
-  link: 'https://github.com'
-}
+import '../styles/repositories.scss';
 
 export function RepositoryList() {
-  const [counter, setCounter] = useState(0);
+  const [repositories, setRepositories] = useState([]);
 
-  function increment() {
-    setCounter(counter + 1);
-  }
+  useEffect(() => {
+    fetch('https://api.github.com/orgs/rocketseat/repos')
+      .then(response => response.json())
+      .then(data => setRepositories(data))
+  }, []);
 
   return (
     <section className="repository-list">
       <h1>Lista de repositórios</h1>
 
       <ul>
-        <Repositoryitem repository={repository} />
-        <Repositoryitem repository={repository} />
-        <Repositoryitem repository={repository} />
-        <Repositoryitem repository={repository} />
+        {repositories.map(repository => {
+          return <Repositoryitem key={repository.id} repository={repository} />
+        })}
       </ul>
-      <h2>{counter}</h2>
-      <button onClick={increment}>Increment</button>
     </section>
   );
 }
